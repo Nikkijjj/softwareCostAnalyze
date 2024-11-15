@@ -110,6 +110,12 @@ const allApi = {
                     },
                 ],
             },
+            {//菜单界面显示评估结果看板
+                name: 'evaluation-result',
+                title: '评估结果看板',
+                iconName: 'svg:laptop-check.svg',
+                number: 1,
+            },
             {
                 title: '站内链接',
                 iconName: 'svg:aligncenter-fill.svg',
@@ -162,6 +168,7 @@ const allApi = {
                 iconName: 'svg:laptop-check.svg',
                 number: 4,
             },
+
             {
                 name: 'merge-table',
                 title: '合并表格展示列表',

@@ -175,6 +175,16 @@ export const constantRoutes = [
                     hasTag: true,
                 },
             },
+            {//评估结果看板路径
+                path: 'evaluation-result',
+                component: () => import('@/views/SoftwareCost/EvaluationResult/index.vue'),
+                name: 'evaluation-result',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
             {
                 path: 'mine',
                 component: () => import('@/views/system/mine/index.vue'),
