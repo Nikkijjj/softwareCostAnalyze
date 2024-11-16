@@ -166,6 +166,26 @@ export const constantRoutes = [
                 },
             },
             {
+                path: 'costEvaluation',
+                component: () => import('@/views/exampleViews/costEvaluation/index.vue'),
+                name: 'costEvaluation',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'costEvaluation/gsc',
+                component: () => import('@/views/exampleViews/costEvaluation/gsc.vue'),
+                name: 'costEvaluation-gsc',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
                 path: 'icon-list',
                 component: () => import('@/views/system/iconList/index.vue'),
                 name: 'icon-list',

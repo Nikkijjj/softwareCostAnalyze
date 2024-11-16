@@ -108,6 +108,14 @@ const allApi = {
                         iconName: 'svg:user-group-fill.svg',
                         showTagIcon: true,
                     },
+                    {
+                        name: 'costEvaluation',
+                        title: '软件造价评估',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:user-group-fill.svg',
+                        showTagIcon: true,
+                    },
                 ],
             },
             {//菜单界面显示评估结果看板
