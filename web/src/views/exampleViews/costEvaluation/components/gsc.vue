@@ -163,9 +163,9 @@
     </div>
     <div class="calculateDFP-container">
     <el-input
-      v-model="input3.value"
+      v-model="di.value"
       style="max-width: 600px"
-      placeholder="点击计算DFP值"
+      placeholder="点击计算总DI值"
       class="input-with-select"
     >
       <template #prepend>
@@ -174,13 +174,13 @@
     </el-input>
 
     <el-input
-      v-model="input3.value"
+      v-model="calculateDFP.value"
       style="max-width: 600px"
       placeholder="点击计算DFP值"
       class="input-with-select"
     >
       <template #prepend>
-        <el-button  type="primary" @click="onSubmit">计算DFP值</el-button>
+        <el-button  type="primary" @click="calculateDFP">计算DFP值</el-button>
       </template>
     </el-input>
   </div>
@@ -210,9 +210,13 @@
     })
 
     // 用于显示计算结果
-    const input3 = reactive({
+    const di = reactive({
       value: ''
     });
+
+    const calculateDFP = reactive({
+      value: ''
+    })
 
     const onSubmit = () => {
       // 获取所有 DI 值的和，防止 null 或 undefined 的情况
@@ -222,13 +226,13 @@
         .reduce((acc, val) => acc + val, 0); // 计算和
 
       // 更新 input3 的值
-      input3.value = sum;
+      di.value = sum;
     }
   </script>
   
   <style scoped>
     /* Your styles go here */
-    .form-container {
+  .form-container {
     display: flex;
     justify-content: space-between;
     gap: 20px; /* 这个可以调整间距 */
@@ -251,6 +255,12 @@
   .gsc-form {
     max-width: 600px;
     margin: 0 auto;
+  }
+
+  .input-with-select {
+    display: flex;
+    align-items: center;
+    margin-top: 13px;
   }
   </style>
   
