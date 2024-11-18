@@ -1,4 +1,4 @@
-package com.neu.costEvaluation.until;
+package com.neu.demo.util;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

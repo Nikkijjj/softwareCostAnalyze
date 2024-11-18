@@ -39,7 +39,6 @@ export default defineComponent({
     setup() {
         const currentStep = ref(0);
 
-        // 定义 next 方法
         const next = () => {
             if (currentStep.value < 2) { // 最多到第 2 步
                 currentStep.value++;
