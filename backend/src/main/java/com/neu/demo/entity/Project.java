@@ -1,9 +1,9 @@
 package com.neu.demo.entity;
 
 public class Project {
-    int projectId;
-    String projectName;
-    String projectInfo;
+    String project_id;
+    String project_name;
+    String project_info;
     String ddl;
     String company;
     String status;
@@ -20,28 +20,28 @@ public class Project {
     public Project() {
     }
 
-    public int getProjectId() {
-        return projectId;
+    public String getProject_id() {
+        return project_id;
     }
 
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
+    public void setProject_id(String project_id) {
+        this.project_id = project_id;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getProject_name() {
+        return project_name;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
     }
 
-    public String getProjectInfo() {
-        return projectInfo;
+    public String getProject_info() {
+        return project_info;
     }
 
-    public void setProjectInfo(String projectInfo) {
-        this.projectInfo = projectInfo;
+    public void setProject_info(String project_info) {
+        this.project_info = project_info;
     }
 
     public String getDdl() {
