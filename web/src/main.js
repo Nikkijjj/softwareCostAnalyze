@@ -14,6 +14,9 @@ import './permission';
 /** 打印完整路由表 */
 import { sysMeluConfigList } from './router/common';
 import 'element-plus/theme-chalk/dark/css-vars.css';
+import vue3TreeOrg from 'vue3-tree-org';
+import "vue3-tree-org/lib/vue3-tree-org.css";
+
 const pinia = createPinia();
 if (!isProd()) {
     console.log('系统完整路由表，router挂载全局window.router', router, sysMeluConfigList);
@@ -32,4 +35,5 @@ if (!isProd()) {
 const app = createApp(App);
 app.use(router);
 app.use(pinia);
+app.use(vue3TreeOrg);
 app.mount('#app');
