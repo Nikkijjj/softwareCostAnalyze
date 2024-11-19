@@ -1,13 +1,5 @@
 <template>
-    <div class="form-container">
-        <el-form
-            ref="formRef"
-            :model="dynamicValidateForm"
-            label-width="auto"
-            class="demo-dynamic"
-            style="width: 900px"
-        >
-            <el-divider style="margin-top: 0; margin-bottom: 15px"></el-divider>
+    <el-form ref="formRef" :model="dynamicValidateForm" label-width="auto" class="demo-dynamic">
             <!--ILF ELF-->
             <el-row>
                 <!--ILF-->
@@ -299,35 +291,13 @@
                     </el-descriptions-item>
                 </el-descriptions>
             </el-row>
-            <el-divider style="margin-top: 0; margin-bottom: 10px"></el-divider>
-            <el-row style="margin-bottom: 15px; margin-top: 0">
-                <el-descriptions
-                    class="margin-top"
-                    title="计算未调整功能点数UFP"
-                    :column="1"
-                    size="28px"
-                    border
-                    label-width="80px"
-                >
-                    <template #extra >
-                        <div style="margin-left: 30px;">
-                            <el-button type="primary" @click.prevent="">计算</el-button>
-                        </div>
-                    </template>
-                    <el-descriptions-item width="80px">
-                        <template #label>
-                            <div class="cell-item" style="display: flex; justify-content: center;"><el-tag size="large" type="warning">UFP</el-tag></div>
-                        </template>
-                        {{ ufp }}
-                    </el-descriptions-item>
-                </el-descriptions>
-            </el-row>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm(formRef)">Submit</el-button>
-                <el-button @click="resetForm(formRef)">Reset</el-button>
-            </el-form-item>
+            <el-divider style="margin-top: 0; margin-bottom: 15px"></el-divider>
+            <el-input v-model="ufp" style="max-width: 600px;height: 38px;" placeholder="点击计算DFP值">
+                <template #prepend>
+                    <el-button type="primary" @click="">计算DFP值</el-button>
+                </template>
+            </el-input>
         </el-form>
-    </div>
 </template>
 
 <script lang="ts" setup>
@@ -340,7 +310,7 @@ let c_elf = ref<number>();
 let c_ei = ref<number>();
 let c_eo = ref<number>();
 let c_eq = ref<number>();
-let ufp=ref<number>();
+let ufp = ref<number>();
 const formRef = ref<FormInstance>();
 const dynamicValidateForm = reactive<{
     ilfs: UfpItem[];
@@ -501,14 +471,8 @@ function handleComplexityChange(value) {
         c_eq.value = 6;
     }
 }
-
 </script>
 
 <style lang="scss">
-.form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* 全屏高度 */
-}
+
 </style>
