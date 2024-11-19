@@ -7,15 +7,17 @@ public class Project {
     String ddl;
     String company;
     String status;
-    int step;
-    double ufp_num;
-    double dfp_num;
-    double s_num;
+    double step;
+    int ufp;
+    double dfp;
+    double s;
     int ei_num;
     int eo_num;
     int eq_num;
     int ilf_num;
     int elf_num;
+    String auditStatus;
+    String auditSuggest;
 
     public Project() {
     }
@@ -68,36 +70,36 @@ public class Project {
         this.status = status;
     }
 
-    public int getStep() {
+    public double getStep() {
         return step;
     }
 
-    public void setStep(int step) {
+    public void setStep(double step) {
         this.step = step;
     }
 
-    public double getUfp_num() {
-        return ufp_num;
+    public int getUfp() {
+        return ufp;
     }
 
-    public void setUfp_num(double ufp_num) {
-        this.ufp_num = ufp_num;
+    public void setUfp(int ufp) {
+        this.ufp = ufp;
     }
 
-    public double getDfp_num() {
-        return dfp_num;
+    public double getDfp() {
+        return dfp;
     }
 
-    public void setDfp_num(double dfp_num) {
-        this.dfp_num = dfp_num;
+    public void setDfp(double dfp) {
+        this.dfp = dfp;
     }
 
-    public double getS_num() {
-        return s_num;
+    public double getS() {
+        return s;
     }
 
-    public void setS_num(double s_num) {
-        this.s_num = s_num;
+    public void setS(double s) {
+        this.s = s;
     }
 
     public int getEi_num() {
@@ -138,5 +140,21 @@ public class Project {
 
     public void setElf_num(int elf_num) {
         this.elf_num = elf_num;
+    }
+
+    public String getAuditSuggest() {
+        return auditSuggest;
+    }
+
+    public void setAuditSuggest(String auditSuggest) {
+        this.auditSuggest = auditSuggest;
+    }
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
     }
 }

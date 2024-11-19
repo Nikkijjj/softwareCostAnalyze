@@ -80,14 +80,13 @@ public class StructureController {
         newModule.setProject_id(project_id);
         newModule.setModule_name(module_name);
         newModule.setModule_desc(module_desc);
-        newModule.setUfp(0.0);
-        newModule.setDfp(0.0);
-        newModule.setS(0.0);
+        newModule.setUfp(0);
         newModule.setEi_num(0);
         newModule.setEo_num(0);
         newModule.setEq_num(0);
         newModule.setIlf_num(0);
         newModule.setElf_num(0);
+        newModule.setStep(0);
         Random random = new Random();
         int random_id = 100 + random.nextInt(900);
         String post = Integer.toString(random_id);

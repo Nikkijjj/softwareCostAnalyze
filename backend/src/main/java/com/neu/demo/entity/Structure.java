@@ -6,14 +6,13 @@ public class Structure {
     private String parent_id;
     private String module_name;
     private String module_desc;
-    private double ufp;
-    private double dfp;
-    private double s;
+    private int ufp;
     private int ei_num;
     private int eo_num;
     private int eq_num;
     private int ilf_num;
     private int elf_num;
+    private double step;
 
     public Structure() {
     }
@@ -58,28 +57,12 @@ public class Structure {
         this.module_desc = module_desc;
     }
 
-    public double getUfp() {
+    public int getUfp() {
         return ufp;
     }
 
-    public void setUfp(double ufp) {
+    public void setUfp(int ufp) {
         this.ufp = ufp;
-    }
-
-    public double getDfp() {
-        return dfp;
-    }
-
-    public void setDfp(double dfp) {
-        this.dfp = dfp;
-    }
-
-    public double getS() {
-        return s;
-    }
-
-    public void setS(double s) {
-        this.s = s;
     }
 
     public int getEi_num() {
@@ -120,5 +103,13 @@ public class Structure {
 
     public void setElf_num(int elf_num) {
         this.elf_num = elf_num;
+    }
+
+    public double getStep() {
+        return step;
+    }
+
+    public void setStep(double step) {
+        this.step = step;
     }
 }
