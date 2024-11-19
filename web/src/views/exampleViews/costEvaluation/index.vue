@@ -15,6 +15,7 @@ import {
 import GSC from './components/gsc.vue';
 import CF from './components/cf.vue';
 
+
 export default defineComponent({
     components: {
         GSC,

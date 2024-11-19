@@ -116,6 +116,14 @@ const allApi = {
                         iconName: 'svg:user-group-fill.svg',
                         showTagIcon: true,
                     },
+                    {
+                        name: 'ifpug',
+                        title: 'ifpug',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:user-group-fill.svg',
+                        showTagIcon: true,
+                    },
                 ],
             },
             {//菜单界面显示评估结果看板

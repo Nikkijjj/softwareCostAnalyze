@@ -186,6 +186,16 @@ export const constantRoutes = [
                 },
             },
             {
+                path: 'ifpug',
+                component: () => import('@/views/exampleViews/costEvaluation/components/ifpug.vue'),
+                name: 'ifpug',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
                 path: 'icon-list',
                 component: () => import('@/views/system/iconList/index.vue'),
                 name: 'icon-list',
