@@ -18,6 +18,7 @@ public class ProjectController {
         this.projectBiz = projectBiz;
     }
 
+    //获取所有项目
     @RequestMapping("/project/selectAllProjects")
     public Map findProjects(){
         List<Project> list = projectBiz.selectProjects();
@@ -28,6 +29,7 @@ public class ProjectController {
         return res;
     }
 
+    //根据项目ID获取项目
     @RequestMapping("/project/selectProjectById")
     public Map findProjectById(String project_id){
         Project project = projectBiz.selectProjectById(project_id);
@@ -35,6 +37,17 @@ public class ProjectController {
         res.put("isOK",true);
         res.put("msg","查询项目成功");
         res.put("project",project);
+        return res;
+    }
+
+    //根据项目所属公司获取项目
+    @RequestMapping("/project/selectProjectsByCompany")
+    public Map findProjectsByCompany(String company){
+        List<Project> list = projectBiz.selectProjectsByCompany(company);
+        Map res = new HashMap<>();
+        res.put("isOK",true);
+        res.put("msg","查询租户下项目成功");
+        res.put("projects",list);
         return res;
     }
 }

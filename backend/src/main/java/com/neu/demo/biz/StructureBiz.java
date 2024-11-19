@@ -16,27 +16,27 @@ public class StructureBiz {
     }
 
     //获取节点的名称
-    public String getModuleName(int module_id) {
+    public String getModuleName(String module_id) {
         return this.structureMapper.getModuleName(module_id);
     }
 
     //获取节点的描述
-    public String getModuleDesc(int module_id) {
+    public String getModuleDesc(String module_id) {
         return this.structureMapper.getModuleDesc(module_id);
     }
 
     //更新节点的信息（名称、描述）
-    public int updateModule(int module_id, String module_name, String module_desc){
+    public int updateModule(String module_id, String module_name, String module_desc){
         return this.structureMapper.updateModule(module_id, module_name, module_desc);
     }
 
     //添加新节点
-    public void addModule(Structure structure){
-        this.structureMapper.insertModule(structure);
+    public int addModule(Structure structure){
+        return this.structureMapper.insertModule(structure);
     }
 
     //删除节点
-    public int deleteModule(int module_id){
+    public int deleteModule(String module_id){
         return this.structureMapper.deleteModule(module_id);
     }
 
@@ -46,7 +46,7 @@ public class StructureBiz {
     }
 
     //根据功能模块id获取选中功能模块的信息
-    public Structure getModuleById(int module_id){
+    public Structure getModuleById(String module_id){
         return this.structureMapper.getModuleById(module_id);
     }
 }
