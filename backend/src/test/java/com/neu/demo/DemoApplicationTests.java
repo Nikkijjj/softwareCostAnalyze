@@ -1,10 +1,10 @@
-package com.neu.costEvaluation;
+package com.neu.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CostEvaluationApplicationTests {
+class DemoApplicationTests {
 
     @Test
     void contextLoads() {
