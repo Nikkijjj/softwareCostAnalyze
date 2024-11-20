@@ -18,7 +18,7 @@ public interface StructureMapper {
 
     //更新节点的信息（名称、描述）
     @Update("update t_structure set module_name = #{module_name}, module_desc = #{module_desc} where module_id = #{module_id}")
-    int updateModule(String module_id, String module_name, String module_desc);
+    int updateModule(@Param("module_id") String module_id, @Param("module_name") String module_name, @Param("module_desc") String module_desc);
 
     //添加新节点
     @Insert("insert into t_structure values(#{module_id}, #{project_id}, #{parent_id}, #{module_name}, #{module_desc}, #{ufp}, #{ei_num}, #{eo_num}, #{eq_num}, #{ilf_num}, #{elf_num}, #{step})")
@@ -35,4 +35,12 @@ public interface StructureMapper {
     //根据功能模块id获取选中功能模块的信息
     @Select("select * from t_structure where module_id = #{module_id}")
     Structure getModuleById(String module_id);
+
+    //获取同一项目下一个parent下的所有模块
+    @Select("select * from t_structure where project_id = #{project_id} and parent_id = #{parent_id}")
+    List<Structure> getModuleByProjectIdAndParentId(@Param("project_id") String project_id, @Param("parent_id") String parent_id);
+
+    //获取一个项目下的所有功能模块
+    @Select("select * from t_structure where project_id = #{project_id}")
+    List<Structure> getModuleByProjectId(String project_id);
 }

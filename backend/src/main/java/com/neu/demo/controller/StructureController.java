@@ -1,9 +1,11 @@
 package com.neu.demo.controller;
 
+import com.neu.demo.biz.ProjectBiz;
 import com.neu.demo.biz.StructureBiz;
 import com.neu.demo.entity.Structure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -15,8 +17,12 @@ import java.util.Random;
 public class StructureController {
     @Autowired
     private StructureBiz structureBiz;
+    private ProjectBiz projectBiz;
     public void setStructureBiz(StructureBiz structureBiz) {
         this.structureBiz = structureBiz;
+    }
+    public void setProjectBiz(ProjectBiz projectBiz) {
+        this.projectBiz = projectBiz;
     }
 
     //所有的方法，传入参数都没加注解，自行调试、加注解
@@ -27,9 +33,15 @@ public class StructureController {
         Structure structure = this.structureBiz.getModuleById(module_id);
         Structure parent = this.structureBiz.getModuleById(structure.getParent_id());
         Map res = new HashMap<>();
-        res.put("isOK", true);
-        res.put("msg", "获取当前功能模块上级功能成功");
-        res.put("parent", parent);
+        if (parent == null) {
+            res.put("isOK", false);
+            res.put("msg", "当前功能模块不存在上级功能模块");
+            res.put("parent", parent);
+        } else {
+            res.put("isOK", true);
+            res.put("msg", "获取当前功能模块上级功能成功");
+            res.put("parent", parent);
+        }
         return res;
     }
 
@@ -57,7 +69,8 @@ public class StructureController {
 
     //更新节点的信息（名称、描述）
     @RequestMapping("/structure/updateModule")
-    public Map updateModule(String module_id, String module_name, String module_desc) {
+    public Map updateModule(@RequestParam("module_id") String module_id, @RequestParam("module_name") String module_name, @RequestParam("module_desc") String module_desc) {
+        System.out.println(module_id);
         int result = this.structureBiz.updateModule(module_id, module_name, module_desc);
         Map res = new HashMap<>();
         if (result > 0) {
@@ -74,7 +87,14 @@ public class StructureController {
 
     //添加新节点(模块id由项目id和三位随机数字拼接而成，后面的功能点变量初始设置为0)
     @RequestMapping("/structure/addModule")
-    public Map addModule(String parent_id, String project_id, String module_name, String module_desc) {
+    public Map addModule(@RequestParam("parent_id") String parent_id, @RequestParam("project_id") String project_id,
+                         @RequestParam("module_name") String module_name, @RequestParam("module_desc") String module_desc) {
+        System.out.println("parent_id:"+parent_id);
+        System.out.println("project_id:"+project_id.getClass());
+        System.out.println("module_name:"+module_name);
+        System.out.println("module_desc:"+module_desc);
+        System.out.println(projectBiz.selectProjectById(project_id).getProject_id());
+        System.out.println(projectBiz.selectProjectById(project_id).getProject_id().getClass());
         Structure newModule = new Structure();
         newModule.setParent_id(parent_id);
         newModule.setProject_id(project_id);
@@ -142,6 +162,34 @@ public class StructureController {
         res.put("isOK",true);
         res.put("msg","获取功能模块成功");
         res.put("structure", structure);
+        return res;
+    }
+
+    //获取同一项目下属于一个parent的所有模块
+    @RequestMapping("/structure/getModulesUnderParent")
+    public Map getModulesUnderParent(@RequestParam("project_id") String project_id, @RequestParam("parent_id") String parent_id) {
+        List<Structure> modules = this.structureBiz.getModuleByProjectIdAndParentId(project_id, parent_id);
+        Map res = new HashMap<>();
+        res.put("isOK",true);
+        res.put("msg","获取子功能模块成功");
+        res.put("modules", modules);
+        return res;
+    }
+
+    //查看当前模块节点是不是叶子结点（第三级别），返回1表示是叶子结点，返回0则不是
+    @RequestMapping("/structure/isLeaf")
+    public Map getModuleLevel(String module_id) {
+        //获取当前节点的父节点，如果父节点为空，就不是叶子结点，如果父节点不为空，就是叶子结点
+        Structure structure = this.structureBiz.getModuleById(module_id);
+        Structure parent = this.structureBiz.getModuleById(structure.getParent_id());
+        Map res = new HashMap<>();
+        if (parent == null) {
+            res.put("isOK",false);
+            res.put("msg","当前功能模块处于第二级");
+        } else {
+            res.put("isOK",true);
+            res.put("msg","当前功能模块处于第三级");
+        }
         return res;
     }
 }

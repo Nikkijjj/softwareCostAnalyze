@@ -49,4 +49,14 @@ public class StructureBiz {
     public Structure getModuleById(String module_id){
         return this.structureMapper.getModuleById(module_id);
     }
+
+    //获取同一项目下属于一个parent的所有模块
+    public List<Structure> getModuleByProjectIdAndParentId(String project_id, String parent_id){
+        return this.structureMapper.getModuleByProjectIdAndParentId(project_id, parent_id);
+    }
+
+    //获取一个项目下的所有功能模块
+    public List<Structure> getModuleByProjectId(String project_id){
+        return this.structureMapper.getModuleByProjectId(project_id);
+    }
 }
