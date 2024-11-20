@@ -2,17 +2,17 @@
   <div class="page-container main-view">
     <div class="content-container">
       <div class="left-panel">
-        <div v-if="project" class="project-info">
-          <h2 class="project-name">{{ project.project_name }}</h2>
+        <div v-if="currentProject" class="project-info">
+          <h2 class="project-name">{{ currentProject.project_name }}</h2>
           <div class="info-row">
-            <el-tag :type="tagtype">{{ project.status }}</el-tag>
-            <p class="font-size: 1em;">{{ project.company }}</p>
+            <el-tag :type="tagtype">{{ currentProject.status }}</el-tag>
+            <p class="font-size: 1em;">{{ currentProject.company }}</p>
           </div>
           <div class="details">
-            <div v-html="project.project_info"></div>
+            <div v-html="currentProject.project_info"></div>
           </div>
           <div class="info-row ddl-row">
-            <p class="font-size: 1em;">评估截止日期：{{ project.ddl }}</p>
+            <p class="font-size: 1em;">评估截止日期：{{ currentProject.ddl }}</p>
           </div>
         </div>
         <div v-else>
@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { Plus, Minus } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
@@ -81,7 +81,6 @@ interface Module {
   parent_id: string,
 }
 
-const project = ref(null);
 const tagtype = ref('');
 
 const projectJson = ref('');
@@ -99,40 +98,31 @@ const selectedModule = ref(''); // 当前选中的功能模块
 const state = ref('readOnly'); // 只读状态or编辑状态
 const isModified = ref(false); // 文本是否有改动
 
+// 获取当前项目
+const loadCurrentProject = () => {
+  const projectStorage = localStorage.getItem('project');
+  projectJson.value = projectStorage;
+  currentProject.value = JSON.parse(projectJson);
+}
+
 //获取当前页面展示项目的基本信息
 async function getProject() {
   //这里需要获取当前页面的项目
   try {
-    const response = await axios.get('http://localhost:9000/project/selectProjectById', {
-      params: { project_id: '2' },
-    });
-    if (response.data.isOK) {
-      project.value = response.data.project;
-      projectJson.value = response.data.project;
-      currentProject.value = response.data.project;
-      switch (project.value.status) {
-        case '已评估':
-          tagtype.value = 'success';
-          break;
-        case '未评估':
-          tagtype.value = 'danger';
-          break;
-        default:
-          tagtype.value = 'warning';
-      }
-    } else {
-      ElMessage.error(response.data.msg || '获取项目失败');
+    switch (currentProject.value.status) {
+      case '已评估':
+        tagtype.value = 'success';
+        break;
+      case '未评估':
+        tagtype.value = 'danger';
+        break;
+      default:
+        tagtype.value = 'warning';
     }
+
   } catch (error) {
     ElMessage.error('API请求错误');
   }
-}
-
-// 获取当前项目
-const loadCurrentProject = () => {
-  const projectStorage = localStorage.getItem('project');
-  //projectJson.value = projectStorage;
-  //currentProject.value = JSON.parse(projectJson);
 }
 
 // 获取一级功能结构
@@ -289,7 +279,7 @@ const addNode = async (parentNode: Node) => {
       ElMessage({ message: res.data.msg, type: 'success' });
 
       selectedModule.value = newNode;
-      console.log("111",selectedModule.value.id);
+      console.log("111", selectedModule.value.id);
       formatTreeChart();
     } else {
       ElMessage({ message: res.data.msg, type: 'error' });
