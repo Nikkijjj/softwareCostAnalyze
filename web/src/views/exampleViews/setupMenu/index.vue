@@ -267,8 +267,7 @@ const save = async () => {
 // 添加新节点 （三级节点后不能继续加
 const addNode = async (parentNode: Node) => {
   const lastLevel = await isLastLevel(parentNode);
-  console.log("nodeId",parentNode.id);
-  console.log("projectId",projectJson.value.project_id);
+
   if (!lastLevel) {
     const res = await axios.get('http://localhost:9000/structure/addModule', {
       params: {
@@ -290,9 +289,10 @@ const addNode = async (parentNode: Node) => {
       ElMessage({ message: res.data.msg, type: 'success' });
 
       selectedModule.value = newNode;
+      console.log("111",selectedModule.value.id);
       formatTreeChart();
     } else {
-      ElMessage({ message: "当前功能节点是三级节点，无法新增", type: 'error' });
+      ElMessage({ message: res.data.msg, type: 'error' });
     }
   }
 }
@@ -317,7 +317,6 @@ const isLastLevel = async (node: Node) => {
     ElMessage({ message: res.data.msg, type: 'error' });
     return true;
   } else {
-    ElMessage({ message: res.data.msg, type: 'error' });
     return false;
   }
 }

@@ -21,7 +21,7 @@ public interface StructureMapper {
     int updateModule(@Param("module_id") String module_id, @Param("module_name") String module_name, @Param("module_desc") String module_desc);
 
     //添加新节点
-    @Insert("insert into t_structure values(#{module_id}, #{project_id}, #{parent_id}, #{module_name}, #{module_desc}, #{ufp}, #{ei_num}, #{eo_num}, #{eq_num}, #{ilf_num}, #{elf_num}, #{step})")
+    @Insert("insert into t_structure values(#{project_id}, #{module_id}, #{parent_id}, #{module_name}, #{module_desc}, #{ufp}, #{ei_num}, #{eo_num}, #{eq_num}, #{ilf_num}, #{elf_num}, #{step})")
     int insertModule(Structure structure);
 
     //删除节点

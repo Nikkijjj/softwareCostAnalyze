@@ -17,12 +17,8 @@ import java.util.Random;
 public class StructureController {
     @Autowired
     private StructureBiz structureBiz;
-    private ProjectBiz projectBiz;
     public void setStructureBiz(StructureBiz structureBiz) {
         this.structureBiz = structureBiz;
-    }
-    public void setProjectBiz(ProjectBiz projectBiz) {
-        this.projectBiz = projectBiz;
     }
 
     //所有的方法，传入参数都没加注解，自行调试、加注解
@@ -93,8 +89,6 @@ public class StructureController {
         System.out.println("project_id:"+project_id.getClass());
         System.out.println("module_name:"+module_name);
         System.out.println("module_desc:"+module_desc);
-        System.out.println(projectBiz.selectProjectById(project_id).getProject_id());
-        System.out.println(projectBiz.selectProjectById(project_id).getProject_id().getClass());
         Structure newModule = new Structure();
         newModule.setParent_id(parent_id);
         newModule.setProject_id(project_id);
@@ -117,11 +111,11 @@ public class StructureController {
         if (result > 0) {
             res.put("isOK",true);
             res.put("msg","添加功能模块成功");
-            res.put("result",result);
+            res.put("module",newModule);
         } else {
             res.put("isOK",false);
             res.put("msg","添加功能模块失败");
-            res.put("result",result);
+            res.put("module",newModule);
         }
         return res;
     }
