@@ -43,4 +43,33 @@ public interface StructureMapper {
     //获取一个项目下的所有功能模块
     @Select("select * from t_structure where project_id = #{project_id}")
     List<Structure> getModuleByProjectId(String project_id);
+
+    //获取功能模块的ufp
+    @Select("select ufp from t_structure where module_id = #{module_id}")
+    int getUfp(String module_id);
+
+    //获取功能模块的ei_num
+    @Select("select ei_num from t_structure where module_id = #{module_id}")
+    int getEiNum(String module_id);
+
+    //获取功能模块的eo_num
+    @Select("select eo_num from t_structure where module_id = #{module_id}")
+    int getEoNum(String module_id);
+
+    //获取功能模块的eq_num
+    @Select("select eq_num from t_structure where module_id = #{module_id}")
+    int getEqNum(String module_id);
+
+    //获取功能模块的ilf_num
+    @Select("select ilf_num from t_structure where module_id = #{module_id}")
+    int getIlfNum(String module_id);
+
+    //获取功能模块的elf_num
+    @Select("select elf_num from t_structure where module_id = #{module_id}")
+    int getElfNum(String module_id);
+
+    //获取功能模块的step
+    @Select("select step from t_structure where module_id = #{module_id}")
+    double getStep(String module_id);
+
 }
