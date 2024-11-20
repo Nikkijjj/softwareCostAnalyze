@@ -59,4 +59,48 @@ public class StructureBiz {
     public List<Structure> getModuleByProjectId(String project_id){
         return this.structureMapper.getModuleByProjectId(project_id);
     }
+
+    //当前功能模块是否为叶子节点（第三级别）
+    public boolean isLeaf(String module_id){
+        //获取当前节点的父节点，如果父节点为空，就不是叶子结点，如果父节点不为空，就是叶子结点
+        Structure structure = this.structureMapper.getModuleById(module_id);
+        Structure parent = this.structureMapper.getModuleById(structure.getParent_id());
+        if(parent == null) return false;
+        else return true;
+    }
+
+    //获取功能模块的ufp
+    public int getModuleUfp(String module_id){
+        return this.structureMapper.getUfp(module_id);
+    }
+
+    //获取功能模块的ei_num
+    public int getModuleEiNum(String module_id){
+        return this.structureMapper.getEiNum(module_id);
+    }
+
+    //获取功能模块的eo_num
+    public int getModuleEoNum(String module_id){
+        return this.structureMapper.getEoNum(module_id);
+    }
+
+    //获取功能模块的eq_num
+    public int getModuleEqNum(String module_id){
+        return this.structureMapper.getEqNum(module_id);
+    }
+
+    //获取功能模块的ilf_num
+    public int getModuleIlfNum(String module_id){
+        return this.structureMapper.getIlfNum(module_id);
+    }
+
+    //获取功能模块的elf_num
+    public int getModuleElfNum(String module_id){
+        return this.structureMapper.getElfNum(module_id);
+    }
+
+    //获取功能模块的step
+    public double getModuleStep(String module_id){
+        return this.structureMapper.getStep(module_id);
+    }
 }

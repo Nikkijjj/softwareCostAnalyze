@@ -179,11 +179,9 @@ public class StructureController {
     //查看当前模块节点是不是叶子结点（第三级别），返回1表示是叶子结点，返回0则不是
     @RequestMapping("/structure/isLeaf")
     public Map getModuleLevel(String module_id) {
-        //获取当前节点的父节点，如果父节点为空，就不是叶子结点，如果父节点不为空，就是叶子结点
-        Structure structure = this.structureBiz.getModuleById(module_id);
-        Structure parent = this.structureBiz.getModuleById(structure.getParent_id());
+        boolean result = this.structureBiz.isLeaf(module_id);
         Map res = new HashMap<>();
-        if (parent == null) {
+        if (!result) {
             res.put("isOK",false);
             res.put("msg","当前功能模块处于第二级");
         } else {
