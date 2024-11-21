@@ -76,16 +76,14 @@
                     <IFPUG v-model="ufpFormRef" />
                 </div>
                 <div v-show="currentStep === 1" class="scroll-container">
-                    <GSC />
+                    <GSC ref="gscComponent" :GSCForm="GSCForm" />
                 </div>
                 <div v-show="currentStep === 2" class="scroll-container">
-                    <CF />
+                    <CF ref="cfComponent" :CfForm="CfForm" />
                 </div>
                 <div class="button-container">
-                    <el-button class="opr-btn" @click.prevent="saveModuleUFPEva(0.5)"
-                        >保存</el-button
-                    >
-                    <el-button class="opr-btn" @click.prevent="submitModuleUFPEva">提交</el-button>
+                    <el-button class="opr-btn" @click.prevent="saveModuleEva()">保存</el-button>
+                    <el-button class="opr-btn" @click.prevent="submitModuleEva">提交</el-button>
                     <el-button class="opr-btn" v-if="p_step == 0.5">进入GSC评估</el-button>
                     <el-button class="opr-btn" v-if="p_step == 0.8">进入CF评估</el-button>
                 </div>
@@ -95,42 +93,39 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted,reactive, ref, computed, watch, toRefs ,watchEffect} from 'vue';
+import { onMounted, reactive, ref, computed, watch, toRefs, watchEffect } from 'vue';
 import GSC from './components/gsc.vue';
 import CF from './components/cf.vue';
 import IFPUG from './components/ifpug.vue';
 import StrctureTree from './components/treeList.vue';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-import axios from 'axios';
-
+//CF对象和接口
 interface CfItem {
-  project_id: string;
-  dfp_id: number;
-  type: string;
-  value: number;
+    project_id: string;
+    dfp_id: number;
+    type: string;
+    value: number;
 }
-
 const CfForm = reactive<{
-  cf: CfItem;
-  ufp: number;
+    cf: CfItem;
+    ufp: number;
 }>({
-  cf: {
-    project_id: '',
-    dfp_id: 0,
-    type: 'cf',
-    value: 0,
-  },
-  ufp: 0,
-})
-
+    cf: {
+        project_id: '',
+        dfp_id: 0,
+        type: 'cf',
+        value: 0,
+    },
+    ufp: 0,
+});
+//GSC对象和接口
 interface GSCItem {
     project_id: string;
     gsc_id: number;
     type: string;
     value: number;
 }
-
 const GSCForm = reactive<{
     gsc: GSCItem;
     ufp: number;
@@ -227,12 +222,10 @@ const GSCForm = reactive<{
             gsc_id: 0,
             type: '支持变更',
             value: 0,
-        }
+        },
     ],
-})
-
-
-//UFP接口和对象
+});
+//UFP对象和接口
 interface UfpItem {
     module_id: string;
     ufp_id: number;
@@ -308,9 +301,12 @@ const currentIsLeaf = ref();
 
 onMounted(async () => {
     try {
-        const response = await axios.get('http://localhost:9000/costEvaluation/projectInfo?project_id=1');
+        const response = await axios.get(
+            'http://localhost:9000/costEvaluation/projectInfo?project_id=2',
+        );
         CfForm.ufp = response.data.project.ufp;
         GSCForm.ufp = response.data.project.ufp;
+        p_step.value = response.data.project.step;
         console.log('项目信息：', response.data);
         console.log('UFP1：', CfForm.ufp);
         console.log('UFP2：', GSCForm.ufp);
@@ -322,71 +318,61 @@ onMounted(async () => {
 const cfComponent = ref(null);
 const gscComponent = ref(null);
 
-// watchEffect(() => gscComponent.value.isGSCComplete, (isComplete) => {
-//     if (isComplete) {
-//         p_step.value = 0.8;
-//     } else {
-//         p_step.value = 0.5;
-//     }
-// });
-
 const saveModuleEva = async () => {
-  try {
-    const response = await axios.get('http://localhost:9000/costEvaluation/projectInfo?project_id=1');
-    console.log('save里的项目信息：', response.data);
-
-    if (response.data.project && response.data.project.step) {
-
-      const step = response.data.project.step;
-
-      if (step === 0.5) {
-        if (cfComponent.value) {
-          console.log("CF保存" + cfComponent.value);
-          cfComponent.value.storeSValue();
-          cfComponent.value.sendCfItemToBackend();
-          console.log('保存S值成功！');
-        } else {
-          console.log('未找到 S 值组件！');
-        }
-      } else if (step === 0.8) {
-        console.log("GSC保存" + gscComponent.value);
-        if (gscComponent.value) {
-        //   gscComponent.value.storeDFPValue();
-          gscComponent.value.sendGSCValuesToBackend();//保存的方法
-          console.log('保存GSC值成功！');
-        } else {
-          console.log('未找到 GSC 值组件！');
-        }
-      } else if (step === 0) {
-        // 调用其他函数，暂时为空
-        console.log('UFP保存');
-      }
+    //保存所有表单信息
+    if (cfComponent.value) {
+        console.log('CF保存' + cfComponent.value);
+        cfComponent.value.storeSValue();
+        cfComponent.value.sendCfItemToBackend();
+        console.log('保存S值成功！');
+    } else {
+        console.log('未找到 S 值组件！');
     }
-  } catch (error) {
-    console.log('获取项目信息失败', error);
-    ElMessage.error('获取项目信息失败: ' + error.message);
-  }
+    console.log('GSC保存' + gscComponent.value);
+    if (gscComponent.value) {
+        gscComponent.value.storeDFPValue();
+        gscComponent.value.sendGSCValuesToBackend(); //保存的方法
+        console.log('保存GSC值成功！');
+    } else {
+        console.log('未找到 GSC 值组件！');
+    }
+    saveModuleUFPEva(1);
+    //检测并保存项目评估进度
+    catchGSCandCFStep()
+    //更新p_step
+    //
+  
 };
 
-const catchGSCStep = async () => {
-
-      // 检查 GSC 表单是否完整
-      if (gscComponent.value.isGSCComplete) {
-          // 如果表单完整，设置 step 为 0.8
+const catchGSCandCFStep = async () => {
+    // 检查 GSC 表单是否完整
+    if (gscComponent.value.isGSCComplete&&cfComponent.value.isCFComplete) {
+        // 如果2.3表单完整，设置 step 为 0.9
+        p_step.value = 0.9;
+    } else if(gscComponent.value.isGSCComplete&&!cfComponent.value.isCFComplete||!gscComponent.value.isGSCComplete&&cfComponent.value.isCFComplete) {
+        // 如果表单有一项未完整，设置 step 为 0.8
         p_step.value = 0.8;
-      } else {
-        // 如果表单未完整，设置 step 为 0.5
+    } else if(!gscComponent.value.isGSCComplete&&!cfComponent.value.isCFComplete) {
+        // 如果表单2.3均未填完，设置 step 为 0.8
         p_step.value = 0.5;
-      }
+    } 
+
 };
 
 const submitModuleEva = () => {
-    console.log('提交');
+    
+    if(p_step.value===0.9){
+        saveModuleEva();
+        //发送请求更新项目进度为1
+        //
+    }else(p_step.value<0.9) {
+        ElMessage.warning("您尚未评估完成，请继续评估。注意保存全部信息后再提交！");
+    }
 };
 
 //根据点击状态和项目评估进度设置步骤条状态
 const step1Status = computed(() => {
-    if (p_step.value >= 0.25) {
+    if (p_step.value >= 0.5) {
         return 'success';
     }
     if (currentStep.value === 0) {
@@ -412,7 +398,7 @@ const step3Status = computed(() => {
     }
     return 'wait'; // 默认状态
 });
-//
+//树形组件点击处理
 function handleNodeClick(module: any, type: string) {
     if (type == 'leaf') {
         console.log('选中的模块:', module);
@@ -464,9 +450,8 @@ function saveModuleUFPEva(m_step: number) {
         ElMessage.error('未选中功能模块！');
         return;
     } else {
-        if (p_step.value < 0.5) {
-            //发送模块未调整功能点信息到后端
-            console.log('父组件中ufp：' + String(ufpFormRef.ufp.value));
+        //发送模块未调整功能点信息到后端
+        console.log('父组件中ufp：' + String(ufpFormRef.ufp.value));
             let fd = new FormData();
             fd.append('module_id', currentModule.value.module_id); // 假设是字符串
             fd.append('project_id', currentModule.value.project_id); // 假设是字符串
@@ -519,7 +504,6 @@ function saveModuleUFPEva(m_step: number) {
                 .catch(() => {
                     ElMessage.error('发送数据失败，请稍后重试');
                 });
-        }
     }
     //发送请求，要求项目根据结构表更新自身信息
     axios
@@ -543,10 +527,6 @@ function saveModuleUFPEva(m_step: number) {
             console.error('获取数据失败:', error);
         });
 }
-//提交模块ufp
-function submitModuleUFPEva() {}
-
-
 </script>
 
 <style scoped lang="scss">
@@ -572,7 +552,6 @@ function submitModuleUFPEva() {}
     display: flex; /* 使用 Flex 布局 */
     justify-content: flex-end; /* 按钮靠右对齐 */
     align-items: center;
-    
 }
 .opr-btn {
     margin-left: 8px; /* 按钮之间的间距 */

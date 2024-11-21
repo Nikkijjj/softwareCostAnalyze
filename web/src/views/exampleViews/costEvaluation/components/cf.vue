@@ -51,9 +51,6 @@ import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
-// const form = reactive({
-//   cf: 0,
-// })
 
 interface CfItem {
   project_id: string;
@@ -73,12 +70,6 @@ const dynamicValidateForm = reactive<{
   },
 })
 
-// const props = defineProps({
-//   sValue: {
-//     type: Object,
-//     required: true,
-//   },
-// });
 
 //定义props
 const props = defineProps<{
@@ -88,27 +79,6 @@ const props = defineProps<{
 }>();
 
 
-// const emit = defineEmits(['update:sValue']);
-
-// const dynamicValidateForm = reactive({...props.sValue });
-
-// // 监听本地数据变化并同步到父组件
-// watch(
-//     dynamicValidateForm,
-//   (newVal) => {
-//     emit('update:sValue', newVal);
-//   },
-//   { deep: true }
-// );
-
-// // 监听父组件数据更新，保持子组件同步
-// watch(
-//     () => props.sValue,
-//     (newValue) => {
-//         Object.assign(dynamicValidateForm, newValue);
-//     }
-// );
-
 // 用于存储从后端获取的 UFP 值
 const ufp = ref(0)
 
@@ -117,6 +87,9 @@ const s = ref(0)
 
 const { CfForm } = props;
 
+const isCFComplete = computed(() => {
+    return dynamicValidateForm.cf.every((item) => item.value !== -1) && s.value !== 0 ;
+  })
 // 从后端获取 UFP 值
 const fetchUFP = async () => {
   try {
@@ -132,16 +105,6 @@ const fetchUFP = async () => {
     ElMessage.error('获取 UFP 失败: ' + error.message)
   }
 }
-
-// 计算 S 值
-// const calculateS = () => {
-//   if (dynamicValidateForm.cf.value && ufp.value) {
-//     s.value = dynamicValidateForm.cf.value * ufp.value
-//     ElMessage.success('S 值计算成功')
-//   } else {
-//     ElMessage.warning('请选择下拉框选项并确保 UFP 值已获取')
-//   }
-// }
 
 const calculateS = () => {
   if (dynamicValidateForm.cf.value && CfForm.ufp) {

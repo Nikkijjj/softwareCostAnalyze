@@ -8,9 +8,6 @@ import java.util.List;
 import com.neu.demo.entity.GSC;
 import com.neu.demo.entity.Project;
 import com.neu.demo.entity.S;
-import org.apache.ibatis.annotations.*;
-
-import java.util.List;
 
 @Mapper
 public interface CostEvaluationMapper {
@@ -30,8 +27,7 @@ public interface CostEvaluationMapper {
     @Insert("insert into t_s (project_id, type, value) values (#{project_id}, #{type}, #{value})")
     int insertCfItem(S cfItem);
 
-    @Select("select ufp_num from t_project where project_id=#{project_id}")
-    double selectUFP(@Param("project_id") int project_id);
+
     //
     @Select("select  * from t_ufp where module_id=#{module_id}")
     List<UFP> selectModuleUfp(@Param("module_id") String module_id);

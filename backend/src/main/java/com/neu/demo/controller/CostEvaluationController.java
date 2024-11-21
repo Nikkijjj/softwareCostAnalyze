@@ -21,8 +21,6 @@ public class CostEvaluationController {
     @Autowired
     private CostEvaluationBiz costEvaluationBiz;
 
-    @Autowired
-    private CostEvaluationMapper costEvaluationMapper;
 
     @RequestMapping("/costEvaluation/ufp")
     @ResponseBody  // 表示返回的是 JSON 响应
