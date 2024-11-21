@@ -293,6 +293,11 @@
                 <el-button type="primary" @click.prevent="computeUFP">计算UFP值</el-button>
             </template>
         </el-input>
+        <el-alert type="info" show-icon :closable="false" style="margin-top:5px;">
+            <p>
+                计算公式：UFP=ILF*A+EIF*B+EI*C+EO*D+EQ*E
+            </p>
+        </el-alert>
     </el-form>
 </template>
 
@@ -320,9 +325,9 @@ const emit = defineEmits(['update:modelValue']);
 // 本地拷贝，防止直接修改父组件数据
 const dynamicValidateForm = reactive({ ...props.modelValue });
 const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
+    if (!formEl) return;
+    formEl.resetFields();
+};
 // 子组件：监听并同步父组件传递的数据
 watch(
     () => props.modelValue, // 监听父组件数据
@@ -336,7 +341,6 @@ watch(
         Object.assign(dynamicValidateForm, newValue); // 浅拷贝父组件数据到本地数据
         handleComplexityChange(dynamicValidateForm.complexity.detail);
         console.log('父组件数据更新:', newValue);
-        
     },
     { deep: true, immediate: true }, // 深度监听并在初始化时执行
 );

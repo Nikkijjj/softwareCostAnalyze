@@ -35,18 +35,19 @@
         </div>
     </el-row>
 
-
-
-    <el-input v-model="s" style="max-width: 600px;height: 38px;" placeholder="点击计算DFP值">
-        <template #prepend>
-            <el-button type="primary" @click="calculateS">计算DFP值</el-button>
-        </template>
-    </el-input>
-
-  </el-form>
+        <el-input v-model="s" style="max-width: 600px; height: 38px" placeholder="点击计算DFP值">
+            <template #prepend>
+                <el-button type="primary" @click="calculateS">计算DFP值</el-button>
+            </template>
+        </el-input>
+        <el-alert type="info" show-icon :closable="false" style="margin-top: 5px">
+            <p>计算公式：S=UFP*CF</p>
+        </el-alert>
+    </el-form>
 </template>
 
 <script lang="ts" setup>
+
 import { reactive, ref, watch , computed, defineProps,  defineExpose, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
@@ -98,6 +99,7 @@ const props = defineProps<{
   }
 }>();
 
+
 // 用于存储从后端获取的 UFP 值
 const ufp = ref(0)
 
@@ -106,6 +108,9 @@ const s = ref(0)
 
 const { CfForm } = props;
 
+const isCFComplete = computed(() => {
+    return dynamicValidateForm.cf.value !== -1 && s.value !== 0;
+});
 onMounted(async () => {
   const project_id = dynamicValidateForm.cf.project_id;
   try {
@@ -211,8 +216,7 @@ const sendCfItemToBackend = async () => {
   }
 };
 
-defineExpose({  storeSValue,  sendCfItemToBackend });
-
+defineExpose({ storeSValue, sendCfItemToBackend, isCFComplete });
 </script>
 
 <style scoped>
