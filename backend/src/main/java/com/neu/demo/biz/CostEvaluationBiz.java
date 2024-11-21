@@ -45,6 +45,10 @@ public class CostEvaluationBiz {
         int rowsAffected = costEvaluationMapper.updateSValue(project_id, s_value);
         return rowsAffected > 0;
     }
+    public boolean storeStep(String project_id, Double step) {
+        int rowsAffected = costEvaluationMapper.updateStep(project_id, step);
+        return rowsAffected > 0;
+    }
 
     public boolean storeDFPValue(String project_id, Double dfp_num) {
         int rowsAffected = costEvaluationMapper.updateDFPValue(project_id, dfp_num);

@@ -21,6 +21,9 @@ public interface CostEvaluationMapper {
     @Update("update t_project set s=#{s_value} where project_id=#{project_id}")
     int updateSValue(@Param("project_id") String project_id, @Param("s_value") Double s_value);
 
+    @Update("update t_project set step=#{step} where project_id=#{project_id}")
+    int updateStep(@Param("project_id") String project_id, @Param("step") Double step);
+
     @Update("update t_project set dfp=#{dfp_num} where project_id=#{project_id}")
     int updateDFPValue(@Param("project_id") String project_id, @Param("dfp_num") Double dfp_num);
 
