@@ -186,6 +186,11 @@
                 </template>
             </el-input>
         </div>
+        <el-alert type="info" show-icon :closable="false" style="margin-top:5px;">
+            <p>
+                计算公式：DFP=(UFP+CFP)*[(∑DI*0.01)+0.65]
+            </p>
+        </el-alert>
     </el-form>
 </template>
 

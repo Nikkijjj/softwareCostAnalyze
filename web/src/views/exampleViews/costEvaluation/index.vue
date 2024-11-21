@@ -20,12 +20,6 @@
                             <div class="statusTag">
                                 <el-tag
                                     size="large"
-                                    type="success"
-                                    v-if="currentModule && currentModule.step === 0.5"
-                                    >评估中</el-tag
-                                >
-                                <el-tag
-                                    size="large"
                                     type="info"
                                     v-if="currentModule && currentModule.step === 0"
                                     >未评估</el-tag
@@ -61,11 +55,13 @@
                             title="计算系统已调整功能点数(通用系统调整因子法)"
                             @click="currentStep = 1"
                             :status="step2Status"
+                            description="请根据项目功能结构和具体需求，在下拉框中为不同综合系统特征的DI取值。"
                         />
                         <el-step
                             title="计算系统未调整功能点数(需求变更调整因子法)"
                             @click="currentStep = 2"
                             :status="step3Status"
+                            description="请根据项目阶段，确定规模变更调整因子。"
                         />
                     </el-steps>
                 </div>
@@ -84,8 +80,7 @@
                 <div class="button-container">
                     <el-button class="opr-btn" @click.prevent="saveModuleEva()">保存</el-button>
                     <el-button class="opr-btn" @click.prevent="submitModuleEva">提交</el-button>
-                    <el-button class="opr-btn" v-if="p_step == 0.5">进入GSC评估</el-button>
-                    <el-button class="opr-btn" v-if="p_step == 0.8">进入CF评估</el-button>
+                    <el-button class="opr-btn" v-if="p_step == 0.5">进入已调整功能点评估</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -99,7 +94,7 @@ import CF from './components/cf.vue';
 import IFPUG from './components/ifpug.vue';
 import StrctureTree from './components/treeList.vue';
 import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 //CF对象和接口
 
 interface CfItem {
@@ -300,6 +295,7 @@ const currentStep = ref(0);
 const p_step = ref<number>(0); //项目评估进度
 const currentModule = ref<any>(null);
 const currentIsLeaf = ref();
+const confirmSubmitDialogVisible = ref(false);
 
 onMounted(async () => {
     try {
@@ -344,37 +340,63 @@ const saveModuleEva = async () => {
     }
     saveModuleUFPEva(1);
     //检测并保存项目评估进度
-    catchGSCandCFStep()
+    catchGSCandCFStep();
     //更新p_step
-    //
-  
+    const res = await axios.get('http://localhost:9000/structure/getModulesUnderParent', {
+        params: { project_id: '2', step: p_step.value },
+    });
+    console.log('保存更新步骤：' + res.data.msg);
 };
 
 const catchGSCandCFStep = async () => {
     // 检查 GSC 表单是否完整
-    if (gscComponent.value.isGSCComplete&&cfComponent.value.isCFComplete) {
-        // 如果2.3表单完整，设置 step 为 0.9
+    if (gscComponent.value.isGSCComplete && cfComponent.value.isCFComplete && p_step.value == 0.5) {
+        // 如果1.2.3表单完整，设置 step 为 0.9
         p_step.value = 0.9;
-    } else if(gscComponent.value.isGSCComplete&&!cfComponent.value.isCFComplete||!gscComponent.value.isGSCComplete&&cfComponent.value.isCFComplete) {
-        // 如果表单有一项未完整，设置 step 为 0.8
+    } else if (
+        (gscComponent.value.isGSCComplete &&
+            !cfComponent.value.isCFComplete &&
+            p_step.value == 0.5) ||
+        (!gscComponent.value.isGSCComplete && cfComponent.value.isCFComplete && p_step.value == 0.5)
+    ) {
+        // 如果2 3表单有一项未完整，设置 step 为 0.8
         p_step.value = 0.8;
-    } else if(!gscComponent.value.isGSCComplete&&!cfComponent.value.isCFComplete) {
-        // 如果表单2.3均未填完，不设置 step
+    } else if (!gscComponent.value.isGSCComplete && !cfComponent.value.isCFComplete) {
+        // 如果表单2.3均未填完，不设置 step，项目进度为步骤1进度
         //p_step.value = 0.5;
         return;
-    } 
-
+    }
 };
 
-const submitModuleEva = () => {
-    
-    if(p_step.value===0.9){
-        saveModuleEva();
-        //发送请求更新项目进度为1
-        //
-    }else if (p_step.value<0.9){
-        ElMessage.warning("您尚未评估完成，请继续评估。注意保存全部信息后再提交！");
-    }
+const submitModuleEva = async () => {
+    ElMessageBox.confirm(
+        '是否提交评估数据？提交后无法修改已有的评估数据，只能重新评估。 是否继续提交?',
+        '提示',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        },
+    )
+        .then(async () => {
+            if (p_step.value === 0.9) {
+                saveModuleEva();
+                //发送请求更新项目进度为1
+                const res = await axios.get(
+                    'http://localhost:9000/structure/getModulesUnderParent',
+                    {
+                        params: { project_id: '2', step: 1 },
+                    },
+                );
+                console.log('更新步骤：' + res.data.msg);
+                ElMessage({ type: 'success', message: '提交成功' });
+            } else if (p_step.value < 0.9) {
+                ElMessage.warning('您尚未评估完成，请继续评估。注意保存全部信息后再提交！');
+            }
+        })
+        .catch(() => {
+            ElMessage({ type: 'info', message: '取消提交' });
+        });
 };
 
 //根据点击状态和项目评估进度设置步骤条状态
@@ -459,58 +481,53 @@ function saveModuleUFPEva(m_step: number) {
     } else {
         //发送模块未调整功能点信息到后端
         console.log('父组件中ufp：' + String(ufpFormRef.ufp.value));
-            let fd = new FormData();
-            fd.append('module_id', currentModule.value.module_id); // 假设是字符串
-            fd.append('project_id', currentModule.value.project_id); // 假设是字符串
-            fd.append('parent_id', currentModule.value.parent_id); // 假设是字符串
-            fd.append('module_name', currentModule.value.module_name); // 假设是字符串
-            fd.append('module_desc', currentModule.value.module_desc); // 假设是字符串
-            fd.append('ufp', String(ufpFormRef.ufp.value)); // 将 number 转为 string
-            fd.append('ei_num', String(ufpFormRef.eis.value.filter((item) => item.detail).length)); // 转为 string
-            fd.append('eo_num', String(ufpFormRef.eos.value.filter((item) => item.detail).length)); // 转为 string
-            fd.append('eq_num', String(ufpFormRef.eqs.value.filter((item) => item.detail).length)); // 转为 string
-            fd.append(
-                'ilf_num',
-                String(ufpFormRef.ilfs.value.filter((item) => item.detail).length),
-            ); // 转为 string
-            fd.append(
-                'elf_num',
-                String(ufpFormRef.elfs.value.filter((item) => item.detail).length),
-            ); // 转为 string
-            fd.append('step', String(m_step)); // 将 step 转为 string
-            axios
-                .post('http://localhost:9000/structure/updateUFPInfo', fd)
-                .then((res) => {
-                    if (res.data.isOk) {
-                        ElMessage.success('保存未调整功能点数信息成功！');
-                    } else {
-                        ElMessage.error('保存未调整功能点数信息失败！');
-                    }
-                })
-                .catch(() => {
-                    ElMessage.error('发送模块未调整功能点信息失败，请稍后重试');
-                });
-            //发送ufp详细信息到后端
-            const mergedUfpData = [
-                ...ufpFormRef.ilfs.value.filter((item) => item.detail), // 过滤有 detail 的数据
-                ...ufpFormRef.elfs.value.filter((item) => item.detail),
-                ...ufpFormRef.eis.value.filter((item) => item.detail),
-                ...ufpFormRef.eos.value.filter((item) => item.detail),
-                ...ufpFormRef.eqs.value.filter((item) => item.detail),
-                ufpFormRef.complexity.value, // complexity 是一个单独对象，直接加入数组
-            ];
-            axios
-                .post('http://localhost:9000/costEvaluation/insertUfpInfo', mergedUfpData)
-                .then((res) => {
-                    if (res.data.isOk) {
-                        console.log('模块未调整功能点信息保存成功！');
-                    } else {
-                        console.log('模块未调整功能点信息保存失败！');
-                    }
-                })
-                .catch(() => {
-                    ElMessage.error('发送数据失败，请稍后重试');
-                });
+        currentModule.value.step=m_step;
+        let fd = new FormData();
+        fd.append('module_id', currentModule.value.module_id); // 假设是字符串
+        fd.append('project_id', currentModule.value.project_id); // 假设是字符串
+        fd.append('parent_id', currentModule.value.parent_id); // 假设是字符串
+        fd.append('module_name', currentModule.value.module_name); // 假设是字符串
+        fd.append('module_desc', currentModule.value.module_desc); // 假设是字符串
+        fd.append('ufp', String(ufpFormRef.ufp.value)); // 将 number 转为 string
+        fd.append('ei_num', String(ufpFormRef.eis.value.filter((item) => item.detail).length)); // 转为 string
+        fd.append('eo_num', String(ufpFormRef.eos.value.filter((item) => item.detail).length)); // 转为 string
+        fd.append('eq_num', String(ufpFormRef.eqs.value.filter((item) => item.detail).length)); // 转为 string
+        fd.append('ilf_num', String(ufpFormRef.ilfs.value.filter((item) => item.detail).length)); // 转为 string
+        fd.append('elf_num', String(ufpFormRef.elfs.value.filter((item) => item.detail).length)); // 转为 string
+        fd.append('step', String(m_step)); // 将 step 转为 string
+        axios
+            .post('http://localhost:9000/structure/updateUFPInfo', fd)
+            .then((res) => {
+                if (res.data.isOk) {
+                    ElMessage.success('UFP信息存储成功！');
+                } else {
+                    ElMessage.error('UFP信息存储失败！');
+                }
+            })
+            .catch(() => {
+                ElMessage.error('发送模块未调整功能点信息失败，请稍后重试');
+            });
+        //发送ufp详细信息到后端
+        const mergedUfpData = [
+            ...ufpFormRef.ilfs.value.filter((item) => item.detail), // 过滤有 detail 的数据
+            ...ufpFormRef.elfs.value.filter((item) => item.detail),
+            ...ufpFormRef.eis.value.filter((item) => item.detail),
+            ...ufpFormRef.eos.value.filter((item) => item.detail),
+            ...ufpFormRef.eqs.value.filter((item) => item.detail),
+            ufpFormRef.complexity.value, // complexity 是一个单独对象，直接加入数组
+        ];
+        axios
+            .post('http://localhost:9000/costEvaluation/insertUfpInfo', mergedUfpData)
+            .then((res) => {
+                if (res.data.isOk) {
+                    console.log('模块未调整功能点信息保存成功！');
+                } else {
+                    console.log('模块未调整功能点信息保存失败！');
+                }
+            })
+            .catch(() => {
+                ElMessage.error('发送数据失败，请稍后重试');
+            });
     }
     //发送请求，要求项目根据结构表更新自身信息
     axios
