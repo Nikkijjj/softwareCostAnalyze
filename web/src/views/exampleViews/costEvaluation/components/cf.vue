@@ -47,13 +47,17 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch , computed, defineProps,  defineExpose, onMounted } from 'vue'
+import { reactive, ref, defineProps,  defineExpose, onMounted,watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
-// const form = reactive({
-//   cf: 0,
-// })
+//定义props
+const props = defineProps<{
+  CfForm: {
+    ufp: number;
+    cf: CfItem;
+  }
+}>();
 
 interface CfItem {
   project_id: string;
@@ -61,12 +65,18 @@ interface CfItem {
   type: string;
   value: number;
 }
+interface CfItem1 {
+  project_id: string;
+  s_id: number;
+  type: string;
+  value: string;
+}
 
 const dynamicValidateForm = reactive<{
   cf: CfItem;
 }>({
   cf: {
-    project_id: '1',
+    project_id: props.CfForm.cf.project_id,
     s_id: 0,
     type: 'cf',
     value: 0,
@@ -74,29 +84,16 @@ const dynamicValidateForm = reactive<{
 })
 
 const dynamicValidateForm2 = reactive<{
-  cf: CfItem;
+  cf: CfItem1;
 }>({
   cf: {
-    project_id: '1',
+    project_id: props.CfForm.cf.project_id,
     s_id: 0,
     type: 'cf',
-    value: 0,
+    value: '',
   },
 })
 
-// const props = defineProps({
-//   sValue: {
-//     type: Object,
-//     required: true,
-//   },
-// });
-
-//定义props
-const props = defineProps<{
-  CfForm: {
-    ufp: number;
-  }
-}>();
 
 // 用于存储从后端获取的 UFP 值
 const ufp = ref(0)
@@ -104,10 +101,43 @@ const ufp = ref(0)
 // 用于存储计算后的 S 值
 const s = ref(0)
 
+const radioData = [
+  {
+  label: '项目立项',
+  value: 2.00,
+  }, 
+  {
+    label: '项目招标',
+    value: 1.50,
+  }, 
+  {
+    label: '项目早期',
+    value: 1.26,
+  }, 
+  {
+    label: '项目中期',
+    value: 1.26,
+  }, 
+  {
+    label: '项目完成',
+    value: 1.00,
+  }]
+
+
+
 const { CfForm } = props;
 
-onMounted(async () => {
-  const project_id = dynamicValidateForm.cf.project_id;
+watch(CfForm.cf, (newVal, oldVal) => {
+  fetchData();
+})
+
+const fetchData = async () => {
+  
+  const project_id = CfForm.cf.project_id;
+  dynamicValidateForm.cf.project_id = project_id;
+  console.log("dynamicValidateForm.cf: ", dynamicValidateForm.cf);
+  console.log("props.CfForm.cf:" + props.CfForm.cf);
+  console.log("project_idhhh: ", project_id);
   try {
     // 调用后端API获取数据
     const response = await axios.get(`http://localhost:9000/costEvaluation/getSItem`, {params: {project_id: project_id}});
@@ -116,12 +146,16 @@ onMounted(async () => {
     console.log("cf值：" + response.data.cf[0].value);
     // 检查响应数据是否存在
     if (response.data.isOk) {
-      dynamicValidateForm.cf.value = response.data.cf[0].value;
+      let temp = response.data.cf[0].value;
+      let cf_value = radioData.find(item=>item.value === temp)?.label as string
+      dynamicValidateForm2.cf.value = cf_value;
+      dynamicValidateForm.cf.value = temp;
     }
   } catch (error) {
     console.error('Error fetching S data:', error);
   }
-});
+}
+
 
 // 从后端获取 UFP 值
 const fetchUFP = async () => {

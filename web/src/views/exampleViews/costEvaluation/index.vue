@@ -101,19 +101,21 @@ import StrctureTree from './components/treeList.vue';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 //CF对象和接口
+
 interface CfItem {
     project_id: string;
-    dfp_id: number;
+    s_id: number;
     type: string;
     value: number;
 }
+
 const CfForm = reactive<{
     cf: CfItem;
     ufp: number;
 }>({
     cf: {
         project_id: '',
-        dfp_id: 0,
+        s_id: 0,
         type: 'cf',
         value: 0,
     },
@@ -304,9 +306,13 @@ onMounted(async () => {
         const response = await axios.get(
             'http://localhost:9000/costEvaluation/projectInfo?project_id=2',
         );
+        CfForm.cf.project_id = response.data.project.project_id;
+        GSCForm.gsc.project_id = response.data.project.project_id;
         CfForm.ufp = response.data.project.ufp;
         GSCForm.ufp = response.data.project.ufp;
         p_step.value = response.data.project.step;
+        
+        console.log("CfForm.cf.project_id"+CfForm.cf.project_id);
         console.log('项目信息：', response.data);
         console.log('UFP1：', CfForm.ufp);
         console.log('UFP2：', GSCForm.ufp);

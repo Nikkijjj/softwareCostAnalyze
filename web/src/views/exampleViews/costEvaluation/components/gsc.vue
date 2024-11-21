@@ -196,7 +196,6 @@ import {ref, watch} from 'vue';
 import axios, { AxiosResponse } from 'axios';
 import { ElMessage } from 'element-plus';
 import { defineProps, defineExpose } from 'vue';
-import { el } from 'element-plus/es/locales.mjs';
 
 const form = reactive({
     di1: -1,
@@ -222,6 +221,7 @@ const form = reactive({
   const props = defineProps<{
     GSCForm: {
         ufp: number;
+        gsc: GSCItem;
     }
   }>()
 
@@ -229,7 +229,12 @@ const form = reactive({
     return dynamicValidateForm.di.every( (item) => item.value !== -1) && di.value !== 0 && dfp_num.value !== 0;
   })
 
-// const { GSCForm } = props;
+const { GSCForm } = props;
+
+watch(GSCForm.gsc, () => {
+    fetchData();
+})
+
 
 interface GSCItem {
     project_id: string;
@@ -244,7 +249,7 @@ const dynamicValidateForm = reactive<{
     di: GSCItem[];
 }>({
     gsc: {
-        project_id: '1',
+        project_id: props.GSCForm.gsc.project_id,
         gsc_id: 0,
         type: 'gsc',
         value: 0,
@@ -252,85 +257,85 @@ const dynamicValidateForm = reactive<{
     ufp: 0,
     di: [
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '数据通信',
             value: form.di1,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '分布式数据处理',
             value: form.di2,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '性能',
             value: form.di3,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '重度配置',
             value: form.di4,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '处理速率',
             value: form.di5,               
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '在线数据输入',
             value: form.di6,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '最终用户使用效率',
             value: form.di7,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '在线升级',
             value: form.di8,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '复杂处理',
             value: form.di9,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '可重用性',
             value: form.di10,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '易安装性',
             value: form.di11,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '易操作性',
             value: form.di12,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '多场所',
             value: form.di13,
         },
         {
-            project_id: '2',
+            project_id: props.GSCForm.gsc.project_id,
             gsc_id: 0,
             type: '支持变更',
             value: form.di14,
@@ -338,10 +343,14 @@ const dynamicValidateForm = reactive<{
     ],
 })
 
-onMounted(async () => {
-  const project_id = dynamicValidateForm.gsc.project_id;
+
+const fetchData = async () => {
+  const project_id = GSCForm.gsc.project_id;
+  dynamicValidateForm.gsc.project_id = project_id;
+  console.log("dynamicValidateForm.di[0].value" + dynamicValidateForm.di[0].value);
+  console.log("project_idjjj" + project_id);
   try {
-    // 调用后端API获取数据
+    
     const response = await axios.get(`http://localhost:9000/costEvaluation/getGSCItem`, {params: {project_id: project_id}});
 
     console.log(response.data);
@@ -357,7 +366,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error fetching GSC data:', error);
   }
-});
+}
 
 const onSubmit = () => {
     console.log("form"+dynamicValidateForm.di[0].value);
@@ -370,24 +379,6 @@ const onSubmit = () => {
     // 更新 input3 的值
     di.value = sum;
   }
-
-//   const calculateDFP = (ufp) => {
-//     console.log("进来");
-    
-//   // 确保 di.value 是数字
-//   const diValue = parseFloat(di.value);
-//   // 确保 ufp 是数字
-//   const ufpValue = parseFloat(ufp);
-
-//   // 计算 VAF
-//   const VAF = (diValue * 0.01) + 0.65;
-//   // 计算 DFP 并返回结果，确保结果是数字
-//   console.log(ufpValue);
-//   console.log(diValue);
-  
-  
-//   return (ufpValue * VAF);
-// }
 
 const calculateDFP = () => {
   // 确保 di.value 是数字
@@ -406,54 +397,6 @@ const calculateDFP = () => {
   console.log("DFP值:", dfp_num.value);
 };
 
-
-//   const fetchUFP = async () => {
-//     try {
-//       // 发送 GET 请求到后端获取 ufp
-//       // const response = await axios.get(`http://localhost:9000/costEvaluation/ufp?project_id=${project_id}`);
-//       const response = await axios.get(`http://localhost:9000/costEvaluation/ufp?project_id=1`);
-
-//       // 检查后端是否返回了成功的状态
-//       if (response.data.isOk) {
-        
-//         // 成功获取到 UFP 值
-//         //更新di.value的值
-        
-//         const sum = [form.di1, form.di2, form.di3, form.di4, form.di5, form.di6, form.di7, form.di8, form.di9, form.di10, form.di11, form.di12, form.di13, form.di14]
-//       .map(Number) // 转换为数字，避免字符串加法
-//       .filter(val => !isNaN(val)) // 过滤掉无效值
-//       .reduce((acc, val) => acc + val, 0); // 计算和
-
-//         // 更新 input3 的值
-//         di.value = sum;
-//         ufp = response.data.ufp_num;
-//         console.log("UFP值:", ufp);
-
-//         console.log(form)
-//         // 调用 calculateDFP 方法计算 DFP 值
-//         dfp_num.value = calculateDFP();
-//         console.log("DFP值:", dfp_num);
-        
-    
-        
-//       } else {
-//         console.log("后端返回失败:", response.data.msg);
-//       }
-//     } catch (error) {
-//       // 处理错误
-//       if (error.response) {
-//         // 请求已发出，但服务器响应的状态码不在 2xx 范围内
-//         console.log("获取 UFP 失败:", error.response.status);
-//         console.log("错误信息:", error.response.data);
-//       } else if (error.request) {
-//         // 请求已发出但没有收到回应
-//         console.log("请求已发出但没有收到回应");
-//       } else {
-//         // 发送请求时出了点问题
-//         console.log("获取 UFP 失败:", error.message);
-//       }
-//     }
-// };
 
 const storeDFPValue = async () => {
     try {
