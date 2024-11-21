@@ -177,7 +177,7 @@ export const constantRoutes = [
             },
             {
                 path: 'costEvaluation/gsc',
-                component: () => import('@/views/exampleViews/costEvaluation/gsc.vue'),
+                component: () => import('@/views/exampleViews/costEvaluation/components/gsc.vue'),
                 name: 'costEvaluation-gsc',
                 meta: {
                     layoutName: 'main',

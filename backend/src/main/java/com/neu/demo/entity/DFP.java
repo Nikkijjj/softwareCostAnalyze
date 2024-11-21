@@ -2,7 +2,7 @@ package com.neu.demo.entity;
 
 public class DFP {
     int dfp_id;
-    String module_id;
+    String project_id;
     String type;
     String detail;
 
@@ -17,12 +17,12 @@ public class DFP {
         this.dfp_id = dfp_id;
     }
 
-    public String getModule_id() {
-        return module_id;
+    public String getProject_id() {
+        return project_id;
     }
 
-    public void setModule_id(String module_id) {
-        this.module_id = module_id;
+    public void setProject_id(String project_id) {
+        this.project_id = project_id;
     }
 
     public String getType() {

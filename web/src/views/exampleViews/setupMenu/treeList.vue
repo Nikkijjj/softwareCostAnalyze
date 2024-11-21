@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { onMounted, ref, reactive } from 'vue';
-import { ElTree } from 'element-plus/es/components/index.js';
+import { ElTree } from 'element-plus';
 import axios from 'axios';
 
 interface Node {
