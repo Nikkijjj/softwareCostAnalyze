@@ -51,16 +51,28 @@ public class CostEvaluationBiz {
         return rowsAffected > 0;
     }
 
-    public void saveCfItem(S cfItem) {
-        costEvaluationMapper.insertCfItem(cfItem);
+    public void insertCfItem(S cfItem) {
+        costEvaluationMapper.saveCfItem(cfItem);
     }
 
     public void insertGSCItem(GSC diDatum) {
         costEvaluationMapper.saveGSCItem(diDatum);
     }
 
+    public void deleteCFItem(String project_id) {
+        costEvaluationMapper.deleteCFItemsByProjectId(project_id);
+    }
+
     public void deleteGSCItems(String project_id){
         costEvaluationMapper.deleteGSCItemsByProjectId(project_id);
+    }
+
+    public List<GSC> getGSCItem(String project_id) {
+        return costEvaluationMapper.selectGSCItemsByProjectId(project_id);
+    }
+
+    public List<S> getSItem(String project_id) {
+        return costEvaluationMapper.selectSItemsByProjectId(project_id);
     }
 
 

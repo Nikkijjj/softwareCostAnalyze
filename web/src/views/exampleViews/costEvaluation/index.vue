@@ -359,16 +359,16 @@ const catchGSCandCFStep = async () => {
 
 };
 
-const submitModuleEva = () => {
+// const submitModuleEva = () => {
     
-    if(p_step.value===0.9){
-        saveModuleEva();
-        //发送请求更新项目进度为1
-        //
-    }else(p_step.value<0.9) {
-        ElMessage.warning("您尚未评估完成，请继续评估。注意保存全部信息后再提交！");
-    }
-};
+//     if(p_step.value===0.9){
+//         saveModuleEva();
+//         //发送请求更新项目进度为1
+//         //
+//     }else(p_step.value<0.9){
+//         ElMessage.warning("您尚未评估完成，请继续评估。注意保存全部信息后再提交！");
+//     }
+// };
 
 //根据点击状态和项目评估进度设置步骤条状态
 const step1Status = computed(() => {

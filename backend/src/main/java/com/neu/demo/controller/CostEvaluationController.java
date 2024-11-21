@@ -100,10 +100,14 @@ public class CostEvaluationController {
     public Map<String, Object> saveCfItem(@RequestBody S cfItem) {
         Map<String, Object> result = new HashMap<>();
 
-        // 直接使用传入的cfItem对象
-        this.costEvaluationBiz.saveCfItem(cfItem);
+        // 获取项目ID
+        String project_id = cfItem.getProject_id();
 
-        System.out.println("111");
+        // 调用服务层方法来删除旧的 CF 项
+        costEvaluationBiz.deleteCFItem(project_id);
+
+        // 直接使用传入的cfItem对象
+        costEvaluationBiz.insertCfItem(cfItem);
 
         result.put("isOk", true);
         result.put("msg", "CF项存储成功");
@@ -134,6 +138,7 @@ public class CostEvaluationController {
         }
         return result;
     }
+
     //存储模块相关的ufp信息
     @RequestMapping("/costEvaluation/insertUfpInfo")
     public Map<String, Object> insertUFPInfo(@RequestBody List<UFP> ufpItems){
@@ -158,8 +163,44 @@ public class CostEvaluationController {
         res.put("msg", "加载模块相关的ufp信息成功");
         res.put("ufps", ufps);
         return res;
-
     }
+
+    //加载gsc信息
+    @RequestMapping("/costEvaluation/getGSCItem")
+    @ResponseBody
+    public Map<String, Object> getGSCItem(@RequestParam("project_id") String project_id){
+        System.out.println("project_id: " + project_id);
+        List<GSC> gsc = costEvaluationBiz.getGSCItem(project_id);
+        Map<String, Object> result = new HashMap<>();
+        if (gsc != null && !gsc.isEmpty()) {
+            result.put("isOk", true);
+            result.put("msg", "数据库已有相应GSC信息");
+            result.put("gsc", gsc);
+        } else {
+            result.put("isOk", false);
+            result.put("msg", "数据库无相应GSC信息");
+        }
+        return result;
+    }
+
+    //加载s信息
+    @RequestMapping("/costEvaluation/getSItem")
+    @ResponseBody
+    public Map<String, Object> getSItem(@RequestParam("project_id") String project_id){
+        System.out.println("project_id: " + project_id);
+        List<S> cf = costEvaluationBiz.getSItem(project_id);
+        Map<String, Object> result = new HashMap<>();
+        if (cf != null && !cf.isEmpty()) {
+            result.put("isOk", true);
+            result.put("msg", "数据库中已有相应S信息");
+            result.put("cf", cf);
+        } else {
+            result.put("isOk", false);
+            result.put("msg", "数据库中无相应S信息");
+        }
+        return result;
+    }
+
 }
 
 

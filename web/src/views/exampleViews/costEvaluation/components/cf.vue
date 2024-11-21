@@ -3,7 +3,7 @@
     <el-row>
         <el-form-item label="选择规模变更调整因子">
             <el-radio-group
-               
+                v-model="dynamicValidateForm2.cf.value"
                 @change="handleCFChange"
             >
                 <el-radio value="项目立项" style="margin-right: 70px">项目立项</el-radio>
@@ -47,10 +47,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch , computed, defineProps,  defineExpose, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
+// const form = reactive({
+//   cf: 0,
+// })
 
 interface CfItem {
   project_id: string;
@@ -70,6 +73,23 @@ const dynamicValidateForm = reactive<{
   },
 })
 
+const dynamicValidateForm2 = reactive<{
+  cf: CfItem;
+}>({
+  cf: {
+    project_id: '1',
+    s_id: 0,
+    type: 'cf',
+    value: 0,
+  },
+})
+
+// const props = defineProps({
+//   sValue: {
+//     type: Object,
+//     required: true,
+//   },
+// });
 
 //定义props
 const props = defineProps<{
@@ -77,7 +97,6 @@ const props = defineProps<{
     ufp: number;
   }
 }>();
-
 
 // 用于存储从后端获取的 UFP 值
 const ufp = ref(0)
@@ -87,9 +106,23 @@ const s = ref(0)
 
 const { CfForm } = props;
 
-const isCFComplete = computed(() => {
-    return dynamicValidateForm.cf.every((item) => item.value !== -1) && s.value !== 0 ;
-  })
+onMounted(async () => {
+  const project_id = dynamicValidateForm.cf.project_id;
+  try {
+    // 调用后端API获取数据
+    const response = await axios.get(`http://localhost:9000/costEvaluation/getSItem`, {params: {project_id: project_id}});
+
+    console.log("响应数据："+ response.data);
+    console.log("cf值：" + response.data.cf[0].value);
+    // 检查响应数据是否存在
+    if (response.data.isOk) {
+      dynamicValidateForm.cf.value = response.data.cf[0].value;
+    }
+  } catch (error) {
+    console.error('Error fetching S data:', error);
+  }
+});
+
 // 从后端获取 UFP 值
 const fetchUFP = async () => {
   try {
