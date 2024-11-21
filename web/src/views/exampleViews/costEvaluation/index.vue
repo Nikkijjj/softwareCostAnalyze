@@ -353,8 +353,9 @@ const catchGSCandCFStep = async () => {
         // 如果表单有一项未完整，设置 step 为 0.8
         p_step.value = 0.8;
     } else if(!gscComponent.value.isGSCComplete&&!cfComponent.value.isCFComplete) {
-        // 如果表单2.3均未填完，设置 step 为 0.8
-        p_step.value = 0.5;
+        // 如果表单2.3均未填完，不设置 step
+        //p_step.value = 0.5;
+        return;
     } 
 
 };
@@ -365,7 +366,7 @@ const submitModuleEva = () => {
         saveModuleEva();
         //发送请求更新项目进度为1
         //
-    }else(p_step.value<0.9) {
+    }else if (p_step.value<0.9){
         ElMessage.warning("您尚未评估完成，请继续评估。注意保存全部信息后再提交！");
     }
 };

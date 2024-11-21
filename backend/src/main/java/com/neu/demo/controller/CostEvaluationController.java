@@ -77,6 +77,25 @@ public class CostEvaluationController {
         return result;
     }
 
+    @RequestMapping ("/costEvaluation/storeStep")
+    @ResponseBody
+    public Map<String, Object> storeStep(@RequestParam String project_id, @RequestParam Double step){
+        Map<String, Object> result = new HashMap<>();
+        boolean isStored = costEvaluationBiz.storeStep(project_id, step);
+
+        System.out.println("项目ID"+project_id);
+        System.out.println("step："+step);
+
+        if(isStored){
+            result.put("isOk",true);
+            result.put("msg","项目进度存储成功");
+        }else {
+            result.put("isOk",false);
+            result.put("msg","项目进度存储失败");
+        }
+        return result;
+    }
+
     @RequestMapping("/costEvaluation/storeDFP")
     @ResponseBody
     public Map<String, Object> storeDFP(@RequestParam String project_id, @RequestParam Double dfp_num){

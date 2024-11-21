@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
@@ -88,7 +88,7 @@ const s = ref(0)
 const { CfForm } = props;
 
 const isCFComplete = computed(() => {
-    return dynamicValidateForm.cf.every((item) => item.value !== -1) && s.value !== 0 ;
+    return dynamicValidateForm.cf.value !== -1 && s.value !== 0 ;
   })
 // 从后端获取 UFP 值
 const fetchUFP = async () => {
@@ -178,7 +178,7 @@ const sendCfItemToBackend = async () => {
   }
 };
 
-defineExpose({  storeSValue,  sendCfItemToBackend });
+defineExpose({  storeSValue,  sendCfItemToBackend ,isCFComplete});
 
 </script>
 
