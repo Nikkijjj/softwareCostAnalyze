@@ -26,7 +26,7 @@ public interface ProjectMapper {
     @Update("update t_project set ufp = #{ufp}, ei_num = #{ei_num}, eo_num = #{eo_num}, eq_num = #{eq_num}, ilf_num = #{ilf_num}, elf_num = #{elf_num} where project_id = #{project_id}")
     int updateUFP(@Param("project_id") String project_id, @Param("ufp") int ufp, @Param("ei_num") int ei_num, @Param("eo_num") int eo_num, @Param("eq_num") int eq_num, @Param("ilf_num") int ilf_num, @Param("elf_num") int elf_num);
 
-    //更新项目的step
-    @Update("update t_project set step = #{step} where project_id = #{project_id}")
-    int updateStep(@Param("project_id") String project_id, @Param("step") double step);
+    //更新项目的step和status
+    @Update("update t_project set step = #{step},status=#{status} where project_id = #{project_id}")
+    int updateStep(@Param("project_id") String project_id, @Param("step") double step,@Param("status") String status);
 }

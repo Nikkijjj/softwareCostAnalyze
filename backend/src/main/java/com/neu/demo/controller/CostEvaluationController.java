@@ -4,17 +4,18 @@ package com.neu.demo.controller;
 import com.neu.demo.biz.CostEvaluationBiz;
 import com.neu.demo.entity.GSC;
 import com.neu.demo.entity.Project;
+import com.neu.demo.entity.UFP;
 import com.neu.demo.entity.S;
 import com.neu.demo.mapper.CostEvaluationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/costEvaluation")
 public class CostEvaluationController {
 
     @Autowired
@@ -23,7 +24,7 @@ public class CostEvaluationController {
     @Autowired
     private CostEvaluationMapper costEvaluationMapper;
 
-    @RequestMapping("/ufp")
+    @RequestMapping("/costEvaluation/ufp")
     @ResponseBody  // 表示返回的是 JSON 响应
     public Map<String, Object> searchUFP(@RequestParam String project_id){
         Map<String, Object> result = new HashMap<>();
@@ -42,7 +43,7 @@ public class CostEvaluationController {
         return result;
     }
 
-    @RequestMapping("/projectInfo")
+    @RequestMapping("/costEvaluation/projectInfo")
     @ResponseBody
     public Map<String, Object> projectInfo(@RequestParam String project_id){
         Map<String, Object> result = new HashMap<>();
@@ -59,7 +60,7 @@ public class CostEvaluationController {
         return result;
     }
 
-    @RequestMapping ("/storeS")
+    @RequestMapping ("/costEvaluation/storeS")
     @ResponseBody
     public Map<String, Object> storeS(@RequestParam String project_id, @RequestParam Double s_value){
         Map<String, Object> result = new HashMap<>();
@@ -78,7 +79,7 @@ public class CostEvaluationController {
         return result;
     }
 
-    @RequestMapping("/storeDFP")
+    @RequestMapping("/costEvaluation/storeDFP")
     @ResponseBody
     public Map<String, Object> storeDFP(@RequestParam String project_id, @RequestParam Double dfp_num){
         Map<String, Object> result = new HashMap<>();
@@ -96,7 +97,7 @@ public class CostEvaluationController {
         return result;
     }
 
-    @RequestMapping("/saveCfItem")
+    @RequestMapping("/costEvaluation/saveCfItem")
     @ResponseBody
     public Map<String, Object> saveCfItem(@RequestBody S cfItem) {
         Map<String, Object> result = new HashMap<>();
@@ -111,7 +112,7 @@ public class CostEvaluationController {
         return result;
     }
 
-    @RequestMapping("/saveGSCItem")
+    @RequestMapping("/costEvaluation/saveGSCItem")
     @ResponseBody
     public Map<String, Object> saveGSCItem(@RequestBody List<GSC> diData) {
         Map<String, Object> result = new HashMap<>();
@@ -135,7 +136,38 @@ public class CostEvaluationController {
         }
         return result;
     }
+    //存储模块相关的ufp信息
+    @RequestMapping("/costEvaluation/insertUfpInfo")
+    public Map<String, Object> insertUFPInfo(@RequestBody List<UFP> ufpItems){
+        Map<String, Object> map = new HashMap<>();
+        this.costEvaluationBiz.deleteUFP(ufpItems.get(0).getModule_id());
+        for (UFP item : ufpItems) {
+            System.out.println("Processing UFP item: " + item.getModule_id());
+            costEvaluationBiz.insertUFP(item);
+        }
+        map.put("isOk", true);
+        map.put("msg", "模块未调整功能点信息存储成功！");
+        return map;
+    }
+
+    //加载模块相关的ufp信息
+    @RequestMapping("/costEvaluation/loadUfpInfo")
+    public Map<String, Object> loadUFPInfo(@RequestParam("module_id") String module_id){
+        System.out.println("module_id: " + module_id);
+        List<UFP> ufps = costEvaluationBiz.selectModuleUfp(module_id);
+        Map res = new HashMap<>();
+        res.put("isOK",true);
+        res.put("msg", "加载模块相关的ufp信息成功");
+        res.put("ufps", ufps);
+        return res;
+
+    }
 }
+
+
+
+
+
 
 
 

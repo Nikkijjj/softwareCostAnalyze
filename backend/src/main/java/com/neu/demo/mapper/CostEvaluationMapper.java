@@ -1,6 +1,10 @@
 package com.neu.demo.mapper;
 
 
+import com.neu.demo.entity.UFP;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 import com.neu.demo.entity.GSC;
 import com.neu.demo.entity.Project;
 import com.neu.demo.entity.S;
@@ -26,6 +30,16 @@ public interface CostEvaluationMapper {
     @Insert("insert into t_s (project_id, type, value) values (#{project_id}, #{type}, #{value})")
     int insertCfItem(S cfItem);
 
+    @Select("select ufp_num from t_project where project_id=#{project_id}")
+    double selectUFP(@Param("project_id") int project_id);
+    //
+    @Select("select  * from t_ufp where module_id=#{module_id}")
+    List<UFP> selectModuleUfp(@Param("module_id") String module_id);
+
+    @Insert("insert into t_ufp values(#{module_id},null,#{type},#{detail})")
+    int insertModuleUfp(UFP ufp);
+    @Delete("delete from t_ufp where module_id=#{module_id}")
+    int deleteModuleUfp(String module_id);
     @Insert("INSERT INTO t_dfp (project_id, type, value) VALUES (#{project_id},  #{type}, #{value}) ")
     void saveGSCItem(GSC diDatum);
 

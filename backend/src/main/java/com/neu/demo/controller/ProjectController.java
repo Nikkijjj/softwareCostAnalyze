@@ -92,7 +92,7 @@ public class ProjectController {
         return res;
     }
 
-    //更新项目的step
+    //更新项目的step和status
     @RequestMapping("/project/updateStep")
     public Map updateStep(String project_id){
         List<Structure> structures = structureBiz.getModuleByProjectId(project_id);
@@ -106,8 +106,12 @@ public class ProjectController {
             }
         }
 
-        double project_step = step_sum / leafModules.size();
-        int result = projectBiz.updateStep(project_id, project_step);
+        double project_step = step_sum / leafModules.size()*0.5;
+        String project_status="";
+        if(project_step == 0.0) {project_status="未评估";}
+        if(project_step > 0.0&&project_step<1) {project_status="评估中";}
+        if(project_step == 1) {project_status="已评估";}
+        int result = projectBiz.updateStep(project_id, project_step,project_status);
 
         Map res = new HashMap<>();
         if(result == 1){

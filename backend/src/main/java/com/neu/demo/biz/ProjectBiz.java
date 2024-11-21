@@ -35,8 +35,8 @@ public class ProjectBiz {
         return this.projectMapper.updateUFP(project_id, ufp, ei_num, eo_num, eq_num, ilf_num, elf_num);
     }
 
-    //更新项目的step
-    public int updateStep(String project_id, double step) {
-        return this.projectMapper.updateStep(project_id, step);
+    //更新项目的step和status
+    public int updateStep(String project_id, double step, String project_status) {
+        return this.projectMapper.updateStep(project_id, step,project_status);
     }
 }

@@ -81,6 +81,28 @@ public class StructureController {
         return res;
     }
 
+    //更新节点未调整功能点信息（ufp/ei_num/eo_num/eq_num/ilf_num/elf_num/step）
+    @RequestMapping("/structure/updateUFPInfo")
+    public Map<String, Object> updateUFPInfo(@RequestParam Map<String, String> moduleData) {
+        Map<String, Object> map = new HashMap<>();
+        System.out.println("Received module Data: " + moduleData);
+
+        Structure module = new Structure();
+        module.setModule_id(moduleData.get("module_id"));
+        module.setUfp(Integer.parseInt(moduleData.get("ufp")));
+        module.setEi_num(Integer.parseInt(moduleData.get("ei_num")));
+        module.setEo_num(Integer.parseInt(moduleData.get("eo_num")));
+        module.setEq_num(Integer.parseInt(moduleData.get("eq_num")));
+        module.setIlf_num(Integer.parseInt(moduleData.get("ilf_num")));
+        module.setElf_num(Integer.parseInt(moduleData.get("elf_num")));
+        module.setStep(Double.parseDouble(moduleData.get("step")));
+
+        structureBiz.updateUFPInfo(module);
+        map.put("isOk", true);
+        map.put("msg", "模块未调整功能点信息修改成功！");
+        return map;
+    }
+
     //添加新节点(模块id由项目id和三位随机数字拼接而成，后面的功能点变量初始设置为0)
     @RequestMapping("/structure/addModule")
     public Map addModule(@RequestParam("parent_id") String parent_id, @RequestParam("project_id") String project_id,

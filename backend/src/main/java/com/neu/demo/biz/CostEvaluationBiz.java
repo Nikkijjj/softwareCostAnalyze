@@ -4,6 +4,7 @@ package com.neu.demo.biz;
 import com.neu.demo.entity.GSC;
 import com.neu.demo.entity.Project;
 import com.neu.demo.entity.S;
+import com.neu.demo.entity.UFP;
 import com.neu.demo.mapper.CostEvaluationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,21 @@ public class CostEvaluationBiz {
         int ufp_num = costEvaluationMapper.selectUFP(project_id);
         return ufp_num;
     }
+
+    public int insertUFP(UFP ufp) {
+        return costEvaluationMapper.insertModuleUfp(ufp);
+    }
+
+    public List<UFP> selectModuleUfp(String module_id) {
+        return costEvaluationMapper.selectModuleUfp(module_id);
+    }
+
+    public int deleteUFP(String module_id) {
+        return costEvaluationMapper.deleteModuleUfp(module_id);
+    }
+
+
+
 
     public Project selectProject(String project_id) {
         Project project_info = costEvaluationMapper.selectProject(project_id);

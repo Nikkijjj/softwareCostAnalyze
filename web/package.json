@@ -12,7 +12,7 @@
         "to-rem": "node automationScripts/toRem.js"
     },
     "dependencies": {
-        "@element-plus/icons-vue": "2.0.10",
+        "@element-plus/icons-vue": "^2.0.10",
         "axios": "1.2.2",
         "codess": "^1.1.5",
         "cropperjs": "1.6.1",

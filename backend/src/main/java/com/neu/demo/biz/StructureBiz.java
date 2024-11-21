@@ -30,6 +30,11 @@ public class StructureBiz {
         return this.structureMapper.updateModule(module_id, module_name, module_desc);
     }
 
+    //更新节点未调整功能点信息
+    public void updateUFPInfo(Structure module) {
+        structureMapper.updateUFPInfo(module);
+    }
+
     //添加新节点
     public int addModule(Structure structure){
         return this.structureMapper.insertModule(structure);
@@ -103,4 +108,5 @@ public class StructureBiz {
     public double getModuleStep(String module_id){
         return this.structureMapper.getStep(module_id);
     }
+
 }

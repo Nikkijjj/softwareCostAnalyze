@@ -18,7 +18,13 @@ public interface StructureMapper {
 
     //更新节点的信息（名称、描述）
     @Update("update t_structure set module_name = #{module_name}, module_desc = #{module_desc} where module_id = #{module_id}")
-    int updateModule(@Param("module_id") String module_id, @Param("module_name") String module_name, @Param("module_desc") String module_desc);
+    int updateModule(String module_id, String module_name, String module_desc);
+
+    //更新节点未调整功能点信息
+    @Update("update t_structure set ufp=#{ufp},ei_num=#{ei_num},eo_num=#{eo_num},eq_num=#{eq_num},ilf_num=#{ilf_num}," +
+            "elf_num=#{elf_num},step=#{step} " +
+            "where module_id = #{module_id}")
+    public int updateUFPInfo(Structure module);
 
     //添加新节点
     @Insert("insert into t_structure values(#{project_id}, #{module_id}, #{parent_id}, #{module_name}, #{module_desc}, #{ufp}, #{ei_num}, #{eo_num}, #{eq_num}, #{ilf_num}, #{elf_num}, #{step})")
